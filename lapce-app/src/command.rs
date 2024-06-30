@@ -1,5 +1,6 @@
 use std::{path::PathBuf, rc::Rc, sync::Arc};
 
+pub use floem::views::editor::command::CommandExecuted;
 use floem::{
     keyboard::Modifiers, peniko::kurbo::Vec2, views::editor::command::Command,
 };
@@ -19,6 +20,7 @@ use serde_json::Value;
 use strum::{EnumMessage, IntoEnumIterator};
 use strum_macros::{Display, EnumIter, EnumMessage, EnumString, IntoStaticStr};
 
+use crate::main_split::TabCloseKind;
 use crate::{
     alert::AlertButton,
     debug::RunDebugMode,
@@ -29,8 +31,6 @@ use crate::{
     main_split::{SplitDirection, SplitMoveDirection},
     workspace::LapceWorkspace,
 };
-
-pub use floem::views::editor::command::CommandExecuted;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct LapceCommand {
@@ -190,6 +190,10 @@ pub enum LapceWorkbenchCommand {
     #[strum(serialize = "open_ui_inspector")]
     #[strum(message = "Open Internal UI Inspector")]
     OpenUIInspector,
+
+    #[strum(serialize = "show_env")]
+    #[strum(message = "Show Environment")]
+    ShowEnvironment,
 
     #[strum(serialize = "change_color_theme")]
     #[strum(message = "Change Color Theme")]
@@ -620,6 +624,11 @@ pub enum InternalCommand {
     EditorTabChildClose {
         editor_tab_id: EditorTabId,
         child: EditorTabChild,
+    },
+    EditorTabCloseByKind {
+        editor_tab_id: EditorTabId,
+        child: EditorTabChild,
+        kind: TabCloseKind,
     },
     ShowCodeActions {
         offset: usize,

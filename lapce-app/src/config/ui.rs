@@ -30,6 +30,11 @@ pub struct UIConfig {
     #[field_names(desc = "Set the minimum width for editor tab")]
     tab_min_width: usize,
 
+    #[field_names(
+        desc = "Set whether the editor tab separator should be full height or the height of the content"
+    )]
+    pub tab_separator_height: TabSeparatorHeight,
+
     #[field_names(desc = "Set the width for scroll bar")]
     scroll_width: usize,
 
@@ -79,13 +84,32 @@ pub enum TabCloseButton {
     Off,
 }
 
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    Deserialize,
+    Serialize,
+    Default,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    strum_macros::VariantNames,
+)]
+pub enum TabSeparatorHeight {
+    #[default]
+    Content,
+    Full,
+}
+
 impl UIConfig {
     pub fn scale(&self) -> f64 {
-        self.scale.max(0.1).min(4.0)
+        self.scale.clamp(0.1, 4.0)
     }
 
     pub fn font_size(&self) -> usize {
-        self.font_size.max(6).min(32)
+        self.font_size.clamp(6, 32)
     }
 
     pub fn font_family(&self) -> Vec<FamilyOwned> {
@@ -101,7 +125,7 @@ impl UIConfig {
         if self.icon_size == 0 {
             self.font_size()
         } else {
-            self.icon_size.max(6).min(32)
+            self.icon_size.clamp(6, 32)
         }
     }
 

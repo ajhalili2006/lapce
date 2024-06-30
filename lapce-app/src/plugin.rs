@@ -771,6 +771,7 @@ pub fn plugin_info_view(plugin: PluginData, volt: VoltID) -> impl View {
                         .disabled(|s| {
                             s.background(config.color(LapceColor::EDITOR_DIM))
                         })
+                        .selectable(false)
                 })
                 .disabled(move || installing.map(|i| i.get()).unwrap_or(false))
                 .on_click_stop(move |_| {
@@ -843,8 +844,7 @@ pub fn plugin_info_view(plugin: PluginData, volt: VoltID) -> impl View {
                                 let scroll_width = scroll_width.get();
                                 s.max_width(
                                     scroll_width
-                                        .max(200.0 + 60.0 * 2.0 + 200.0)
-                                        .min(800.0)
+                                        .clamp(200.0 + 60.0 * 2.0 + 200.0, 800.0)
                                         - 60.0 * 2.0
                                         - 200.0,
                                 )
@@ -990,4 +990,5 @@ pub fn plugin_info_view(plugin: PluginData, volt: VoltID) -> impl View {
         }
     })
     .style(|s| s.absolute().size_full())
+    .debug_name("Plugin Info")
 }
